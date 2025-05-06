@@ -5,8 +5,8 @@ class EmojiItem extends StatelessWidget {
     super.key,
     required this.onTap,
     required this.emoji,
-    this.size = 24,
     this.fontFamilyFallback,
+    required this.textStyle,
   });
 
   final VoidCallback onTap;
@@ -14,24 +14,19 @@ class EmojiItem extends StatelessWidget {
   final String emoji;
 
   // size of the emoji, font size
-  final double size;
+  final TextStyle textStyle;
 
   // In some platforms, emoji is not supported, so we need to use fallback font
   final List<String>? fontFamilyFallback;
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onTap,
-      padding: const EdgeInsets.all(0.0),
-      constraints: const BoxConstraints(),
-      alignment: Alignment.center,
-      icon: Text(
+    return InkWell(
+      onTap: onTap,
+      child: Text(
         emoji,
-        style: TextStyle(
-          fontSize: size,
-          fontFamilyFallback: fontFamilyFallback,
-        ),
+        style: textStyle,
+        textAlign: TextAlign.center,
       ),
     );
   }

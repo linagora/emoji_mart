@@ -5,8 +5,8 @@
 import FlutterMacOS
 import Foundation
 
-import shared_preferences_foundation
+import photo_manager
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  SharedPreferencesPlugin.register(with: registry.registrar(forPlugin: "SharedPreferencesPlugin"))
+  PhotoManagerPlugin.register(with: registry.registrar(forPlugin: "PhotoManagerPlugin"))
 }

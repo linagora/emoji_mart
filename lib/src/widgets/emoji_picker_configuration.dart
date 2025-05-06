@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 typedef EmojiSelectedCallback = void Function(
   String emojiId,
   String emoji,
@@ -14,21 +16,23 @@ enum EmojiSkinTone {
 
 class EmojiPickerConfiguration {
   const EmojiPickerConfiguration({
-    this.perLine = 9,
-    this.emojiSize = 24,
+    this.perLine = 6,
+    required this.emojiStyle,
     this.showTabs = true,
     this.showRecentTab = true,
     this.showSearchBar = true,
     this.showSectionHeader = true,
+    this.stickyHeader = false,
     this.defaultSkinTone = EmojiSkinTone.none,
     this.i18n = const EmojiPickerI18n(),
+    this.stickyHeaderTextStyle,
   });
 
   // the number of emojis to show per line
   final int perLine;
 
-  // size of the emoji, font size
-  final double emojiSize;
+  // the size of the emoji
+  final TextStyle emojiStyle;
 
   // whether to show the recent tab
   final bool showRecentTab;
@@ -47,6 +51,12 @@ class EmojiPickerConfiguration {
 
   // internationalization for the EmojiPicker
   final EmojiPickerI18n i18n;
+
+  // whether to show the sticky header
+  final bool stickyHeader;
+
+  // the name of the category
+  final TextStyle? stickyHeaderTextStyle;
 }
 
 /// The interface for the EmojiPicker's i18n.
@@ -61,7 +71,7 @@ class EmojiPickerI18n {
   String get frequent => 'Frequently used';
   String get nature => 'Animals & Nature';
   String get objects => 'Objects';
-  String get people => 'Smileys & People';
+  String get people => 'Emoji & People';
   String get places => 'Travel & Places';
   String get search => 'Search Results';
   String get symbols => 'Symbols';
