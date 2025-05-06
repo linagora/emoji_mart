@@ -235,8 +235,17 @@ class _EmojiPickerState extends State<EmojiPicker>
             builder: (_, keyword, ___) {
               final emojiData = widget.emojiData.filterByKeyword(keyword);
               if (emojiData.categories.isEmpty) {
-                return Center(
-                  child: Text(widget.configuration.i18n.searchNoResult),
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    widget.configuration.searchEmptyWidget ??
+                        const SizedBox.shrink(),
+                    Text(
+                      widget.configuration.i18n.searchNoResult,
+                      style: widget.configuration.searchEmptyTextStyle,
+                    ),
+                  ],
                 );
               }
               return builder(emojiData, skinTone);
