@@ -13,14 +13,12 @@ class EmojiSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 28,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      width: double.infinity,
-      color: Theme.of(context).colorScheme.surface,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         categoryI18n,
-        style: Theme.of(context).textTheme.titleMedium,
+        style: configuration.stickyHeaderTextStyle ??
+            Theme.of(context).textTheme.titleMedium,
       ),
     );
   }

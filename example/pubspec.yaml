@@ -38,7 +38,6 @@ dependencies:
 
   flutter_emoji_mart:
     path: ../
-  adaptive_theme: ^3.4.1
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_emoji_mart/flutter_emoji_mart.dart';
@@ -16,21 +15,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveTheme(
-      light: ThemeData.light(
-        useMaterial3: true,
-      ),
-      dark: ThemeData.dark(
-        useMaterial3: true,
-      ),
-      initial: AdaptiveThemeMode.light,
-      builder: (theme, darkTheme) => MaterialApp(
-        supportedLocales: const [Locale('en')],
-        theme: theme,
-        darkTheme: darkTheme,
-        debugShowCheckedModeBanner: false,
-        home: const MyHomePage(title: '🏪 Emoji Mart'),
-      ),
+    return const MaterialApp(
+      supportedLocales: [Locale('en')],
+      debugShowCheckedModeBanner: false,
+      home: MyHomePage(title: '🏪 Emoji Mart'),
     );
   }
 }
@@ -94,10 +82,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: EmojiPicker(
                         emojiData: snapshot.data!,
                         configuration: const EmojiPickerConfiguration(
-                          emojiSize: 28,
-                          showSectionHeader: false,
-                          perLine: 9,
                           defaultSkinTone: EmojiSkinTone.dark,
+                          emojiStyle: TextStyle(
+                            fontSize: 32,
+                            color: Colors.black,
+                          ),
                         ),
                         itemBuilder: (context, emojiId, emoji, callback) {
                           return MouseRegion(
@@ -109,7 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                 callback(emojiId, emoji);
                               },
                               emoji: emoji,
-                              size: 28,
+                              textStyle: const TextStyle(
+                                fontSize: 32,
+                                color: Colors.black,
+                              ),
                               fontFamilyFallback:
                                   defaultTargetPlatform == TargetPlatform.macOS
                                       ? null
@@ -153,12 +145,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.color_lens_outlined),
-        onPressed: () {
-          AdaptiveTheme.of(context).toggleThemeMode();
-        },
       ),
     );
   }

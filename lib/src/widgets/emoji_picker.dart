@@ -1,6 +1,8 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_emoji_mart/flutter_emoji_mart.dart';
+import 'package:linagora_design_flutter/linagora_design_flutter.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 typedef EmojiSearchBarBuilder = Widget Function(
@@ -17,7 +19,7 @@ class EmojiPicker extends StatefulWidget {
     this.searchBarBuilder,
     this.headerBuilder,
     this.itemBuilder,
-    this.configuration = const EmojiPickerConfiguration(),
+    required this.configuration,
     this.padding = const EdgeInsets.all(0),
   });
 
@@ -65,6 +67,8 @@ class _EmojiPickerState extends State<EmojiPicker>
   // the index of the most visible section
   final ValueNotifier<int> mostVisibleIndex = ValueNotifier(0);
 
+  final ValueNotifier<String> mostVisibleSectionId = ValueNotifier('');
+
   // store the visible fraction of each section
   // the key is the category id
   // the value is the visible fraction
@@ -78,7 +82,7 @@ class _EmojiPickerState extends State<EmojiPicker>
   final ValueNotifier<EmojiSkinTone> skinTone =
       ValueNotifier(EmojiSkinTone.none);
 
-  late TabController tabController;
+  final categoriesScrollController = AutoScrollController();
   final scrollController = ScrollController();
 
   // filtered emoji data
@@ -89,10 +93,6 @@ class _EmojiPickerState extends State<EmojiPicker>
     super.initState();
 
     emojiData = widget.emojiData;
-    tabController = TabController(
-      length: widget.emojiData.categories.length,
-      vsync: this,
-    );
     mostVisibleIndex.addListener(scrollToMostVisibleSectionIndex);
     skinTone.value = widget.configuration.defaultSkinTone;
 
@@ -103,7 +103,7 @@ class _EmojiPickerState extends State<EmojiPicker>
 
   @override
   void dispose() {
-    tabController.dispose();
+    categoriesScrollController.dispose();
     mostVisibleIndex.removeListener(scrollToMostVisibleSectionIndex);
     mostVisibleIndex.dispose();
     scrollController.dispose();
@@ -141,24 +141,62 @@ class _EmojiPickerState extends State<EmojiPicker>
   }
 
   Widget _buildTabBar(BuildContext context) {
-    final tabs = widget.emojiData.categories
-        .map(
-          (category) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Icon(
-              categoryIcon(category.id),
-              size: 20,
+    return SizedBox(
+      height: 56,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        controller: categoriesScrollController,
+        itemCount: widget.emojiData.categories.length,
+        itemBuilder: (_, index) {
+          return InkWell(
+            onTap: () {
+              scrollToSection(
+                index,
+                widget.emojiData.categories[index].id,
+              );
+            },
+            child: ValueListenableBuilder(
+              valueListenable: mostVisibleIndex,
+              builder: (context, visibleIndex, child) {
+                return Column(
+                  children: [
+                    AutoScrollTag(
+                      key: ValueKey(widget.emojiData.categories[index].id),
+                      controller: categoriesScrollController,
+                      index: index,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12.0,
+                          horizontal: 8,
+                        ),
+                        child: Icon(
+                          categoryIcon(
+                            widget.emojiData.categories[index].id,
+                          ),
+                          color: visibleIndex == index
+                              ? LinagoraSysColors.material().primary
+                              : LinagoraRefColors.material().tertiary[30],
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 24,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: visibleIndex == index
+                            ? LinagoraSysColors.material().primary
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
-          ),
-        )
-        .toList();
-    return TabBar(
-      isScrollable: true,
-      controller: tabController,
-      tabs: tabs,
-      onTap: (index) {
-        scrollToSection(index);
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -170,22 +208,18 @@ class _EmojiPickerState extends State<EmojiPicker>
               .map(
                 (category) => SliverPadding(
                   padding: widget.padding,
-                  sliver: SliverVisibilityDetector(
-                    key: ValueKey(category.id),
-                    onVisibilityChanged: (info) => updateMostVisibleSection(
-                      category.id,
-                      info,
-                    ),
-                    sliver: EmojiSection(
-                      sectionKey: sectionKeys[category.id]!,
-                      skinTone: skinTone,
-                      configuration: widget.configuration,
-                      emojiData: emojiData,
-                      category: category,
-                      headerBuilder: widget.headerBuilder,
-                      itemBuilder: widget.itemBuilder,
-                      onEmojiSelected: widget.onEmojiSelected,
-                    ),
+                  sliver: EmojiSection(
+                    onVisibilityChanged: (id, info) {
+                      updateMostVisibleSection(id, info);
+                    },
+                    sectionKey: sectionKeys[category.id]!,
+                    skinTone: skinTone,
+                    configuration: widget.configuration,
+                    emojiData: emojiData,
+                    category: category,
+                    headerBuilder: widget.headerBuilder,
+                    itemBuilder: widget.itemBuilder,
+                    onEmojiSelected: widget.onEmojiSelected,
                   ),
                 ),
               )
@@ -217,13 +251,16 @@ class _EmojiPickerState extends State<EmojiPicker>
 
   void scrollToMostVisibleSectionIndex() {
     final index = mostVisibleIndex.value;
-    tabController.animateTo(index);
+    categoriesScrollController.scrollToIndex(
+      index,
+      preferPosition: AutoScrollPosition.middle,
+    );
   }
 
-  Future<void> scrollToSection(int index) async {
-    final categoryId = widget.emojiData.categories[index].id;
+  Future<void> scrollToSection(int index, String categoryId) async {
     final key = sectionKeys[categoryId];
     final currentContext = key?.currentContext;
+    mostVisibleSectionId.value = categoryId;
     if (currentContext != null) {
       await Scrollable.ensureVisible(
         currentContext,
@@ -252,27 +289,30 @@ class _EmojiPickerState extends State<EmojiPicker>
           .reduce((a, b) => a.value > b.value ? a : b)
           .key;
       mostVisibleIndex.value = widget.emojiData.categories.indexWhere(
-        (category) => category.id == mostVisibleCategoryId,
+        (category) =>
+            category.id == mostVisibleSectionId.value ||
+            category.id == mostVisibleCategoryId,
       );
+      mostVisibleSectionId.value = '';
     });
   }
 
   IconData categoryIcon(String categoryId) {
     switch (categoryId) {
       case 'people':
-        return Icons.tag_faces;
+        return Icons.sentiment_satisfied;
       case 'nature':
-        return Icons.eco;
+        return Icons.emoji_nature;
       case 'foods':
-        return Icons.fastfood;
+        return Icons.local_drink;
       case 'activity':
         return Icons.directions_run;
       case 'places':
-        return Icons.location_city;
+        return Icons.sports_soccer;
       case 'objects':
-        return Icons.lightbulb;
+        return Icons.directions_car;
       case 'symbols':
-        return Icons.emoji_symbols;
+        return Icons.lightbulb;
       case 'flags':
         return Icons.flag;
       default:

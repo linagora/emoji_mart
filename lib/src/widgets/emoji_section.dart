@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_emoji_mart/flutter_emoji_mart.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 typedef EmojiSectionHeaderBuilder = Widget Function(
   BuildContext context,
@@ -25,6 +26,7 @@ class EmojiSection extends StatelessWidget {
     this.headerBuilder,
     this.itemBuilder,
     this.skinTone = EmojiSkinTone.none,
+    this.onVisibilityChanged,
   });
 
   final Key sectionKey;
@@ -35,11 +37,12 @@ class EmojiSection extends StatelessWidget {
   final EmojiSelectedCallback onEmojiSelected;
   final EmojiSectionHeaderBuilder? headerBuilder;
   final EmojiItemBuilder? itemBuilder;
+  final void Function(String categoryId, VisibilityInfo info)?
+      onVisibilityChanged;
 
   @override
   Widget build(BuildContext context) {
     Widget child = SliverGrid.builder(
-      key: sectionKey,
       itemCount: category.emojiIds.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: configuration.perLine,
@@ -57,7 +60,7 @@ class EmojiSection extends StatelessWidget {
               onEmojiSelected,
             ) ??
             EmojiItem(
-              size: configuration.emojiSize,
+              textStyle: configuration.emojiStyle,
               emoji: emoji,
               onTap: () => onEmojiSelected(
                 emojiId,
@@ -67,14 +70,22 @@ class EmojiSection extends StatelessWidget {
       },
     );
     if (configuration.showSectionHeader) {
-      child = SliverStickyHeader(
-        header: headerBuilder != null
-            ? headerBuilder!(context, category)
-            : EmojiSectionHeader(
-                category: category,
-                configuration: configuration,
-              ),
-        sliver: child,
+      child = SliverVisibilityDetector(
+        key: ValueKey(category.id),
+        onVisibilityChanged: (onVisibilityChanged != null)
+            ? (info) => onVisibilityChanged!(category.id, info)
+            : null,
+        sliver: SliverStickyHeader(
+          key: sectionKey,
+          sticky: configuration.stickyHeader,
+          header: headerBuilder != null
+              ? headerBuilder!(context, category)
+              : EmojiSectionHeader(
+                  category: category,
+                  configuration: configuration,
+                ),
+          sliver: child,
+        ),
       );
     }
 
