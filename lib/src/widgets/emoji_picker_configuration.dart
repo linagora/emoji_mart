@@ -26,6 +26,8 @@ class EmojiPickerConfiguration {
     this.defaultSkinTone = EmojiSkinTone.none,
     this.i18n = const EmojiPickerI18n(),
     this.stickyHeaderTextStyle,
+    this.searchEmptyTextStyle,
+    this.searchEmptyWidget,
   });
 
   // the number of emojis to show per line
@@ -33,6 +35,8 @@ class EmojiPickerConfiguration {
 
   // the size of the emoji
   final TextStyle emojiStyle;
+
+  final TextStyle? searchEmptyTextStyle;
 
   // whether to show the recent tab
   final bool showRecentTab;
@@ -57,6 +61,8 @@ class EmojiPickerConfiguration {
 
   // the name of the category
   final TextStyle? stickyHeaderTextStyle;
+
+  final Widget? searchEmptyWidget;
 }
 
 /// The interface for the EmojiPicker's i18n.
@@ -77,7 +83,7 @@ class EmojiPickerI18n {
   String get symbols => 'Symbols';
 
   String get searchHintText => 'Search';
-  String get searchNoResult => 'Oops, no emoji found';
+  String get searchNoResult => 'Nothing found';
   String get searchClearTooltip => 'Clear';
 
   String get skinButtonTooltip => 'Select skin tone';
