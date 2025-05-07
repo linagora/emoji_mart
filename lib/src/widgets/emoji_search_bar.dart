@@ -27,7 +27,6 @@ class _EmojiSearchBarState extends State<EmojiSearchBar> {
   @override
   void dispose() {
     controller.dispose();
-
     super.dispose();
   }
 
@@ -38,6 +37,7 @@ class _EmojiSearchBarState extends State<EmojiSearchBar> {
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(24.0)),
         child: TextField(
+          focusNode: widget.configuration.searchFocusNode,
           controller: controller,
           textInputAction: TextInputAction.search,
           enabled: true,
