@@ -94,6 +94,12 @@ class _EmojiPickerState extends State<EmojiPicker>
 
     emojiData = widget.emojiData;
     mostVisibleIndex.addListener(scrollToMostVisibleSectionIndex);
+    scrollController.addListener(() {
+      if (widget.configuration.searchFocusNode != null &&
+          widget.configuration.searchFocusNode!.hasFocus) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      }
+    });
     skinTone.value = widget.configuration.defaultSkinTone;
 
     for (final element in emojiData.categories) {

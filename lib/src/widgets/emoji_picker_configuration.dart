@@ -28,6 +28,7 @@ class EmojiPickerConfiguration {
     this.stickyHeaderTextStyle,
     this.searchEmptyTextStyle,
     this.searchEmptyWidget,
+    this.searchFocusNode,
   });
 
   // the number of emojis to show per line
@@ -63,6 +64,8 @@ class EmojiPickerConfiguration {
   final TextStyle? stickyHeaderTextStyle;
 
   final Widget? searchEmptyWidget;
+
+  final FocusNode? searchFocusNode;
 }
 
 /// The interface for the EmojiPicker's i18n.

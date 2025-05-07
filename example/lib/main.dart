@@ -81,12 +81,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: 400,
                       child: EmojiPicker(
                         emojiData: snapshot.data!,
-                        configuration: const EmojiPickerConfiguration(
+                        configuration: EmojiPickerConfiguration(
                           defaultSkinTone: EmojiSkinTone.dark,
-                          emojiStyle: TextStyle(
+                          emojiStyle: const TextStyle(
                             fontSize: 32,
                             color: Colors.black,
                           ),
+                          searchFocusNode: FocusNode(),
                         ),
                         itemBuilder: (context, emojiId, emoji, callback) {
                           return MouseRegion(
