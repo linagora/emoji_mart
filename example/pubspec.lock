@@ -212,7 +212,7 @@ packages:
     description:
       path: "."
       ref: update-overlay-when-keyboard-open
-      resolved-ref: a1970870a5f0a11522ee7c6da2af64c8cc0cb0d6
+      resolved-ref: "48b228066dd0a5f468316bcf0ed02e0141c753e8"
       url: "git@github.com:linagora/linagora-design-flutter.git"
     source: git
     version: "0.0.1"

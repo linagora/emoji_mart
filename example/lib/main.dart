@@ -57,94 +57,97 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FutureBuilder<EmojiData>(
-              future: emojiData,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(context).colorScheme.shadow,
-                          blurRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: SizedBox(
-                      width: 320,
-                      height: 400,
-                      child: EmojiPicker(
-                        emojiData: snapshot.data!,
-                        configuration: EmojiPickerConfiguration(
-                          defaultSkinTone: EmojiSkinTone.dark,
-                          emojiStyle: const TextStyle(
-                            fontSize: 32,
-                            color: Colors.black,
+        child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FutureBuilder<EmojiData>(
+                future: emojiData,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context).colorScheme.shadow,
+                            blurRadius: 2,
                           ),
-                          searchFocusNode: FocusNode(),
-                        ),
-                        itemBuilder: (context, emojiId, emoji, callback) {
-                          return MouseRegion(
-                            onHover: (_) {
-                              onHoverEmojiNotifier.value = (emojiId, emoji);
-                            },
-                            child: EmojiItem(
-                              onTap: () {
-                                callback(emojiId, emoji);
-                              },
-                              emoji: emoji,
-                              textStyle: const TextStyle(
-                                fontSize: 32,
-                                color: Colors.black,
-                              ),
-                              fontFamilyFallback:
-                                  defaultTargetPlatform == TargetPlatform.macOS
-                                      ? null
-                                      : ['Noto Color Emoji'],
-                            ),
-                          );
-                        },
-                        onEmojiSelected: (emojiId, emoji) {
-                          selectedEmojiNotifier.value = (emojiId, emoji);
-                        },
+                        ],
                       ),
-                    ),
+                      child: SizedBox(
+                        width: 320,
+                        height: 400,
+                        child: EmojiPicker(
+                          emojiData: snapshot.data!,
+                          configuration: EmojiPickerConfiguration(
+                            defaultSkinTone: EmojiSkinTone.dark,
+                            emojiStyle: const TextStyle(
+                              fontSize: 32,
+                              color: Colors.black,
+                            ),
+                            searchFocusNode: FocusNode(),
+                          ),
+                          itemBuilder: (context, emojiId, emoji, callback) {
+                            return MouseRegion(
+                              onHover: (_) {
+                                onHoverEmojiNotifier.value = (emojiId, emoji);
+                              },
+                              child: EmojiItem(
+                                onTap: () {
+                                  callback(emojiId, emoji);
+                                },
+                                emoji: emoji,
+                                textStyle: const TextStyle(
+                                  fontSize: 32,
+                                  color: Colors.black,
+                                ),
+                                fontFamilyFallback:
+                                    defaultTargetPlatform == TargetPlatform.macOS
+                                        ? null
+                                        : ['Noto Color Emoji'],
+                              ),
+                            );
+                          },
+                          onEmojiSelected: (emojiId, emoji) {
+                            selectedEmojiNotifier.value = (emojiId, emoji);
+                          },
+                        ),
+                      ),
+                    );
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              ValueListenableBuilder<(String, String)>(
+                valueListenable: onHoverEmojiNotifier,
+                builder: (context, value, child) {
+                  return Text(
+                    'You\'re hovering on: ${value.$1} ${value.$2}',
+                    style: Theme.of(context).textTheme.bodyLarge,
                   );
-                }
-                return const CircularProgressIndicator();
-              },
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ValueListenableBuilder<(String, String)>(
-              valueListenable: onHoverEmojiNotifier,
-              builder: (context, value, child) {
-                return Text(
-                  'You\'re hovering on: ${value.$1} ${value.$2}',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                );
-              },
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            ValueListenableBuilder<(String, String)>(
-              valueListenable: selectedEmojiNotifier,
-              builder: (context, value, child) {
-                return Text(
-                  'You have picked the emoji: ${value.$1} ${value.$2}',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                );
-              },
-            ),
-          ],
+                },
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              ValueListenableBuilder<(String, String)>(
+                valueListenable: selectedEmojiNotifier,
+                builder: (context, value, child) {
+                  return Text(
+                    'You have picked the emoji: ${value.$1} ${value.$2}',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
