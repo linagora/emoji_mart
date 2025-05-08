@@ -46,6 +46,8 @@ class EmojiSection extends StatelessWidget {
       itemCount: category.emojiIds.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: configuration.perLine,
+        crossAxisSpacing: configuration.crossAxisSpacing,
+        mainAxisSpacing: configuration.mainAxisSpacing,
       ),
       itemBuilder: (context, index) {
         final emojiId = category.emojiIds[index];

@@ -148,7 +148,7 @@ class _EmojiPickerState extends State<EmojiPicker>
 
   Widget _buildTabBar(BuildContext context) {
     return SizedBox(
-      height: 56,
+      height: 48,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         controller: categoriesScrollController,
@@ -164,39 +164,53 @@ class _EmojiPickerState extends State<EmojiPicker>
             child: ValueListenableBuilder(
               valueListenable: mostVisibleIndex,
               builder: (context, visibleIndex, child) {
-                return Column(
-                  children: [
-                    AutoScrollTag(
-                      key: ValueKey(widget.emojiData.categories[index].id),
-                      controller: categoriesScrollController,
-                      index: index,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 8,
-                        ),
-                        child: Icon(
-                          categoryIcon(
-                            widget.emojiData.categories[index].id,
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: index == 0 ? 0 : 8,
+                    right:
+                        index == widget.emojiData.categories.length - 1 ? 0 : 8,
+                  ),
+                  child: Column(
+                    children: [
+                      AutoScrollTag(
+                        key: ValueKey(widget.emojiData.categories[index].id),
+                        controller: categoriesScrollController,
+                        index: index,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 14,
+                            bottom: 9,
                           ),
+                          child: Icon(
+                            categoryIcon(
+                              widget.emojiData.categories[index].id,
+                            ),
+                            color: visibleIndex == index
+                                ? LinagoraSysColors.material().primary
+                                : LinagoraRefColors.material().tertiary[30],
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 20,
+                        height: 3,
+                        decoration: BoxDecoration(
                           color: visibleIndex == index
                               ? LinagoraSysColors.material().primary
-                              : LinagoraRefColors.material().tertiary[30],
-                          size: 24,
+                              : Colors.transparent,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(
+                              100,
+                            ),
+                            topRight: Radius.circular(
+                              100,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      width: 24,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: visibleIndex == index
-                            ? LinagoraSysColors.material().primary
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               },
             ),

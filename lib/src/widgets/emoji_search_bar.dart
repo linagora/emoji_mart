@@ -36,44 +36,47 @@ class _EmojiSearchBarState extends State<EmojiSearchBar> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Material(
         borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-        child: TextField(
-          focusNode: widget.configuration.searchFocusNode,
-          controller: controller,
-          textInputAction: TextInputAction.search,
-          enabled: true,
-          onChanged: widget.onKeywordChanged,
-          decoration: InputDecoration(
-            filled: true,
-            contentPadding: const EdgeInsets.all(12.0),
-            fillColor: LinagoraSysColors.material().surface,
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            hintText: widget.configuration.i18n.searchHintText,
-            hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: LinagoraRefColors.material().neutral[60],
-                ),
-            floatingLabelBehavior: FloatingLabelBehavior.never,
-            prefixIcon: Icon(
-              Icons.search_outlined,
-              size: 24,
-              color: LinagoraRefColors.material().neutral[60],
-            ),
-            suffixIcon: ValueListenableBuilder(
-              valueListenable: controller,
-              builder: (context, value, child) {
-                return value.text.isNotEmpty ? child! : const SizedBox.shrink();
-              },
-              child: InkWell(
-                onTap: () {
-                  controller.clear();
-                  widget.onKeywordChanged('');
+        child: SizedBox(
+          height: 40,
+          child: TextField(
+            focusNode: widget.configuration.searchFocusNode,
+            controller: controller,
+            textInputAction: TextInputAction.search,
+            enabled: true,
+            onChanged: widget.onKeywordChanged,
+            decoration: InputDecoration(
+              filled: true,
+              contentPadding: const EdgeInsets.all(12.0),
+              fillColor: LinagoraSysColors.material().surface,
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              hintText: widget.configuration.i18n.searchHintText,
+              hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: LinagoraRefColors.material().neutral[60],
+                  ),
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              prefixIcon: Icon(
+                Icons.search_outlined,
+                size: 24,
+                color: LinagoraRefColors.material().neutral[60],
+              ),
+              suffixIcon: ValueListenableBuilder(
+                valueListenable: controller,
+                builder: (context, value, child) {
+                  return value.text.isNotEmpty ? child! : const SizedBox.shrink();
                 },
-                child: Icon(
-                  Icons.close,
-                  size: 24,
-                  color: LinagoraRefColors.material().neutral[60],
+                child: InkWell(
+                  onTap: () {
+                    controller.clear();
+                    widget.onKeywordChanged('');
+                  },
+                  child: Icon(
+                    Icons.close,
+                    size: 24,
+                    color: LinagoraRefColors.material().neutral[60],
+                  ),
                 ),
               ),
             ),
