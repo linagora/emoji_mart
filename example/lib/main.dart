@@ -60,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               FutureBuilder<EmojiData>(
@@ -67,7 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Container(
-                      padding: const EdgeInsets.all(20),
+                      width: 326,
+                      height: 360,
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(10),
@@ -78,44 +81,40 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ],
                       ),
-                      child: SizedBox(
-                        width: 320,
-                        height: 400,
-                        child: EmojiPicker(
-                          emojiData: snapshot.data!,
-                          configuration: EmojiPickerConfiguration(
-                            defaultSkinTone: EmojiSkinTone.dark,
-                            emojiStyle: const TextStyle(
-                              fontSize: 32,
-                              color: Colors.black,
-                            ),
-                            searchFocusNode: FocusNode(),
+                      child: EmojiPicker(
+                        emojiData: snapshot.data!,
+                        configuration: EmojiPickerConfiguration(
+                          defaultSkinTone: EmojiSkinTone.dark,
+                          emojiStyle: const TextStyle(
+                            fontSize: 40,
+                            color: Colors.black,
                           ),
-                          itemBuilder: (context, emojiId, emoji, callback) {
-                            return MouseRegion(
-                              onHover: (_) {
-                                onHoverEmojiNotifier.value = (emojiId, emoji);
-                              },
-                              child: EmojiItem(
-                                onTap: () {
-                                  callback(emojiId, emoji);
-                                },
-                                emoji: emoji,
-                                textStyle: const TextStyle(
-                                  fontSize: 32,
-                                  color: Colors.black,
-                                ),
-                                fontFamilyFallback:
-                                    defaultTargetPlatform == TargetPlatform.macOS
-                                        ? null
-                                        : ['Noto Color Emoji'],
-                              ),
-                            );
-                          },
-                          onEmojiSelected: (emojiId, emoji) {
-                            selectedEmojiNotifier.value = (emojiId, emoji);
-                          },
+                          searchFocusNode: FocusNode(),
                         ),
+                        itemBuilder: (context, emojiId, emoji, callback) {
+                          return MouseRegion(
+                            onHover: (_) {
+                              onHoverEmojiNotifier.value = (emojiId, emoji);
+                            },
+                            child: EmojiItem(
+                              onTap: () {
+                                callback(emojiId, emoji);
+                              },
+                              emoji: emoji,
+                              textStyle: const TextStyle(
+                                fontSize: 40,
+                                color: Colors.black,
+                              ),
+                              fontFamilyFallback:
+                                  defaultTargetPlatform == TargetPlatform.macOS
+                                      ? null
+                                      : ['Noto Color Emoji'],
+                            ),
+                          );
+                        },
+                        onEmojiSelected: (emojiId, emoji) {
+                          selectedEmojiNotifier.value = (emojiId, emoji);
+                        },
                       ),
                     );
                   }
