@@ -21,7 +21,7 @@ class EmojiPickerConfiguration {
     this.mainAxisSpacing = 8,
     required this.emojiStyle,
     this.showTabs = true,
-    this.showRecentTab = true,
+    this.showRecentTab = false,
     this.showSearchBar = true,
     this.showSectionHeader = true,
     this.stickyHeader = false,
@@ -109,6 +109,8 @@ class EmojiPickerI18n {
   String get searchClearTooltip => 'Clear';
 
   String get skinButtonTooltip => 'Select skin tone';
+
+  String get recent => 'Recent';
 
   String get skin1 => 'Default';
 

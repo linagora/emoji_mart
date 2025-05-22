@@ -1,5 +1,8 @@
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_emoji_mart/flutter_emoji_mart.dart';
 
 void main() async {
@@ -42,6 +45,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final EmojiNotifier selectedEmojiNotifier = EmojiNotifier(('', ''));
 
+  Future<Category>? buildRecentEmoji() async {
+    final json = await rootBundle.loadString('assets/recent_emoji_data.json');
+    return Category.fromJson(
+      Map<String, dynamic>.from(jsonDecode(json)),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -83,13 +93,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       child: EmojiPicker(
                         emojiData: snapshot.data!,
+                        recentEmoji: buildRecentEmoji(),
                         configuration: EmojiPickerConfiguration(
                           defaultSkinTone: EmojiSkinTone.dark,
                           emojiStyle: const TextStyle(
-                            fontSize: 40,
+                            fontSize: 32,
                             color: Colors.black,
                           ),
                           searchFocusNode: FocusNode(),
+                          showRecentTab: true,
                         ),
                         itemBuilder: (context, emojiId, emoji, callback) {
                           return MouseRegion(
@@ -102,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               },
                               emoji: emoji,
                               textStyle: const TextStyle(
-                                fontSize: 40,
+                                fontSize: 32,
                                 color: Colors.black,
                               ),
                               fontFamilyFallback:

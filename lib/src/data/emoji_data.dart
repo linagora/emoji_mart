@@ -6,6 +6,7 @@ import 'package:flutter_emoji_mart/flutter_emoji_mart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'emoji_data.freezed.dart';
+
 part 'emoji_data.g.dart';
 
 @freezed
