@@ -33,6 +33,8 @@ class EmojiPickerConfiguration {
     this.searchFocusNode,
   });
 
+  static const String recentCategoryId = 'recent';
+
   // the number of emojis to show per line
   final int perLine;
 

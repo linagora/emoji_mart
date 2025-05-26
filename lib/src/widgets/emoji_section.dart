@@ -40,13 +40,14 @@ class EmojiSection extends StatelessWidget {
   final EmojiItemBuilder? itemBuilder;
   final void Function(String categoryId, VisibilityInfo info)?
       onVisibilityChanged;
-  final Future<Category>? recentEmoji;
+  final Future<Category?>? recentEmoji;
 
   @override
   Widget build(BuildContext context) {
     Widget child;
-    if (category.id == 'recent' && category.emojiIds.isEmpty) {
-      child = FutureBuilder<Category>(
+    if (category.id == EmojiPickerConfiguration.recentCategoryId &&
+        category.emojiIds.isEmpty) {
+      child = FutureBuilder<Category?>(
         future: recentEmoji,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -56,7 +57,7 @@ class EmojiSection extends StatelessWidget {
           }
           if (!snapshot.hasData || snapshot.data!.emojiIds.isEmpty) {
             return const SliverToBoxAdapter(
-              child: Center(child: Text('No recent emojis')),
+              child: SizedBox(height: 16),
             );
           }
           final recentCategory = snapshot.data!;

@@ -54,7 +54,7 @@ class EmojiPicker extends StatefulWidget {
   /// Padding for the emoji picker
   final EdgeInsets padding;
 
-  final Future<Category>? recentEmoji;
+  final Future<Category?>? recentEmoji;
 
   @override
   State<EmojiPicker> createState() => _EmojiPickerState();
@@ -109,7 +109,7 @@ class _EmojiPickerState extends State<EmojiPicker>
     if (widget.configuration.showRecentTab) {
       categories = [
         const Category(
-          id: 'recent',
+          id: EmojiPickerConfiguration.recentCategoryId,
           emojiIds: [],
         ),
         ...widget.emojiData.categories,
