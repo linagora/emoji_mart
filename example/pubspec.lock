@@ -211,8 +211,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: master
-      resolved-ref: "083cbf597cce8bedcc7ccda76a0c49eb06a71e9e"
+      ref: TW-2374-add-blur-behind-reaction-screen-should-darker
+      resolved-ref: "9d5a683ec88158a87fe35544a9fe4d198633a1ca"
       url: "git@github.com:linagora/linagora-design-flutter.git"
     source: git
     version: "0.0.1"
