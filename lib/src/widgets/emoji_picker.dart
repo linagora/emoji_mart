@@ -21,6 +21,7 @@ class EmojiPicker extends StatefulWidget {
     this.itemBuilder,
     required this.configuration,
     this.padding = const EdgeInsets.all(0),
+    this.recentEmoji,
   });
 
   /// Data to use for the picker
@@ -52,6 +53,8 @@ class EmojiPicker extends StatefulWidget {
 
   /// Padding for the emoji picker
   final EdgeInsets padding;
+
+  final Future<Category?>? recentEmoji;
 
   @override
   State<EmojiPicker> createState() => _EmojiPickerState();
@@ -86,13 +89,14 @@ class _EmojiPickerState extends State<EmojiPicker>
   final scrollController = ScrollController();
 
   // filtered emoji data
-  late EmojiData emojiData;
+  late List<Category> categories;
+  late Map<String, Emoji> emojis;
 
   @override
   void initState() {
     super.initState();
 
-    emojiData = widget.emojiData;
+    emojis = widget.emojiData.emojis;
     mostVisibleIndex.addListener(scrollToMostVisibleSectionIndex);
     scrollController.addListener(() {
       if (widget.configuration.searchFocusNode != null &&
@@ -102,7 +106,19 @@ class _EmojiPickerState extends State<EmojiPicker>
     });
     skinTone.value = widget.configuration.defaultSkinTone;
 
-    for (final element in emojiData.categories) {
+    if (widget.configuration.showRecentTab) {
+      categories = [
+        const Category(
+          id: EmojiPickerConfiguration.recentCategoryId,
+          emojiIds: [],
+        ),
+        ...widget.emojiData.categories,
+      ];
+    } else {
+      categories = widget.emojiData.categories;
+    }
+
+    for (final element in categories) {
       sectionKeys[element.id] = GlobalKey();
     }
   }
@@ -152,13 +168,13 @@ class _EmojiPickerState extends State<EmojiPicker>
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         controller: categoriesScrollController,
-        itemCount: widget.emojiData.categories.length,
+        itemCount: categories.length,
         itemBuilder: (_, index) {
           return InkWell(
             onTap: () {
               scrollToSection(
                 index,
-                widget.emojiData.categories[index].id,
+                categories[index].id,
               );
             },
             child: ValueListenableBuilder(
@@ -167,13 +183,12 @@ class _EmojiPickerState extends State<EmojiPicker>
                 return Padding(
                   padding: EdgeInsets.only(
                     left: index == 0 ? 0 : 8,
-                    right:
-                        index == widget.emojiData.categories.length - 1 ? 0 : 8,
+                    right: index == categories.length - 1 ? 0 : 8,
                   ),
                   child: Column(
                     children: [
                       AutoScrollTag(
-                        key: ValueKey(widget.emojiData.categories[index].id),
+                        key: ValueKey(categories[index].id),
                         controller: categoriesScrollController,
                         index: index,
                         child: Padding(
@@ -183,7 +198,7 @@ class _EmojiPickerState extends State<EmojiPicker>
                           ),
                           child: Icon(
                             categoryIcon(
-                              widget.emojiData.categories[index].id,
+                              categories[index].id,
                             ),
                             color: visibleIndex == index
                                 ? LinagoraSysColors.material().primary
@@ -221,10 +236,14 @@ class _EmojiPickerState extends State<EmojiPicker>
   }
 
   Widget _buildSections(BuildContext context) {
-    CustomScrollView builder(EmojiData emojiData, EmojiSkinTone skinTone) =>
+    CustomScrollView builder({
+      required List<Category> categories,
+      required Map<String, Emoji> emojis,
+      required EmojiSkinTone skinTone,
+    }) =>
         CustomScrollView(
           controller: scrollController,
-          slivers: emojiData.categories
+          slivers: categories
               .map(
                 (category) => SliverPadding(
                   padding: widget.padding,
@@ -235,11 +254,17 @@ class _EmojiPickerState extends State<EmojiPicker>
                     sectionKey: sectionKeys[category.id]!,
                     skinTone: skinTone,
                     configuration: widget.configuration,
-                    emojiData: emojiData,
+                    emojiData: EmojiData(
+                      categories: categories,
+                      emojis: emojis,
+                    ),
                     category: category,
                     headerBuilder: widget.headerBuilder,
                     itemBuilder: widget.itemBuilder,
                     onEmojiSelected: widget.onEmojiSelected,
+                    recentEmoji: widget.configuration.showRecentTab
+                        ? widget.recentEmoji
+                        : null,
                   ),
                 ),
               )
@@ -253,7 +278,9 @@ class _EmojiPickerState extends State<EmojiPicker>
           return ValueListenableBuilder(
             valueListenable: keyword,
             builder: (_, keyword, ___) {
-              final emojiData = widget.emojiData.filterByKeyword(keyword);
+              final data = EmojiData(categories: categories, emojis: emojis);
+              final emojiData =
+                  keyword.isEmpty ? data : data.filterByKeyword(keyword);
               if (emojiData.categories.isEmpty) {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -268,14 +295,22 @@ class _EmojiPickerState extends State<EmojiPicker>
                   ],
                 );
               }
-              return builder(emojiData, skinTone);
+              return builder(
+                categories: emojiData.categories,
+                emojis: emojiData.emojis,
+                skinTone: skinTone,
+              );
             },
           );
         },
       );
     }
 
-    return builder(emojiData, EmojiSkinTone.none);
+    return builder(
+      categories: categories,
+      emojis: emojis,
+      skinTone: EmojiSkinTone.none,
+    );
   }
 
   void scrollToMostVisibleSectionIndex() {
@@ -317,7 +352,7 @@ class _EmojiPickerState extends State<EmojiPicker>
       final mostVisibleCategoryId = visibleSections.entries
           .reduce((a, b) => a.value > b.value ? a : b)
           .key;
-      mostVisibleIndex.value = widget.emojiData.categories.indexWhere(
+      mostVisibleIndex.value = categories.indexWhere(
         (category) =>
             category.id == mostVisibleSectionId.value ||
             category.id == mostVisibleCategoryId,

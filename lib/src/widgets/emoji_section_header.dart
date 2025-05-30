@@ -26,6 +26,8 @@ class EmojiSectionHeader extends StatelessWidget {
   // map category id to i18n string
   String get categoryI18n {
     switch (category.id) {
+      case 'recent':
+        return configuration.i18n.recent;
       case 'people':
         return configuration.i18n.people;
       case 'nature':

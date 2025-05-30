@@ -6,6 +6,7 @@ import 'package:flutter_emoji_mart/flutter_emoji_mart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'emoji_data.freezed.dart';
+
 part 'emoji_data.g.dart';
 
 @freezed
@@ -74,6 +75,26 @@ class EmojiData with _$EmojiData {
       return emoji.skins[skinTone.index].native;
     }
     return emoji.skins.first.native;
+  }
+
+  String getIdByEmoji(
+    String emoji, {
+    EmojiSkinTone skinTone = EmojiSkinTone.none,
+  }) {
+    final emojiEntry = emojis.entries.firstWhere(
+      (entry) => entry.value.skins.any(
+        (skin) => skin.native == emoji,
+      ),
+      orElse: () =>
+          throw ArgumentError.value(emoji, 'emoji', 'Emoji not found'),
+    );
+    final emojiId = emojiEntry.key;
+    final emojiData = emojiEntry.value;
+
+    if (0 <= skinTone.index && skinTone.index < emojiData.skins.length) {
+      return emojiId;
+    }
+    return emojiId; // Return the first skin's id
   }
 
   EmojiData filterByKeyword(

@@ -27,6 +27,7 @@ class EmojiSection extends StatelessWidget {
     this.itemBuilder,
     this.skinTone = EmojiSkinTone.none,
     this.onVisibilityChanged,
+    this.recentEmoji,
   });
 
   final Key sectionKey;
@@ -39,38 +40,89 @@ class EmojiSection extends StatelessWidget {
   final EmojiItemBuilder? itemBuilder;
   final void Function(String categoryId, VisibilityInfo info)?
       onVisibilityChanged;
+  final Future<Category?>? recentEmoji;
 
   @override
   Widget build(BuildContext context) {
-    Widget child = SliverGrid.builder(
-      itemCount: category.emojiIds.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: configuration.perLine,
-        crossAxisSpacing: configuration.crossAxisSpacing,
-        mainAxisSpacing: configuration.mainAxisSpacing,
-      ),
-      itemBuilder: (context, index) {
-        final emojiId = category.emojiIds[index];
-        final emoji = emojiData.getEmojiById(
-          emojiId,
-          skinTone: skinTone,
-        );
-        return itemBuilder?.call(
-              context,
-              emojiId,
-              emoji,
-              onEmojiSelected,
-            ) ??
-            EmojiItem(
-              textStyle: configuration.emojiStyle,
-              emoji: emoji,
-              onTap: () => onEmojiSelected(
+    Widget child;
+    if (category.id == EmojiPickerConfiguration.recentCategoryId &&
+        category.emojiIds.isEmpty) {
+      child = FutureBuilder<Category?>(
+        future: recentEmoji,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SliverToBoxAdapter(
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (!snapshot.hasData || snapshot.data!.emojiIds.isEmpty) {
+            return const SliverToBoxAdapter(
+              child: SizedBox(height: 16),
+            );
+          }
+          final recentCategory = snapshot.data!;
+          return SliverGrid.builder(
+            itemCount: recentCategory.emojiIds.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: configuration.perLine,
+              crossAxisSpacing: configuration.crossAxisSpacing,
+              mainAxisSpacing: configuration.mainAxisSpacing,
+            ),
+            itemBuilder: (context, index) {
+              final emojiId = recentCategory.emojiIds[index];
+              final emoji = emojiData.getEmojiById(
+                emojiId,
+                skinTone: skinTone,
+              );
+              return itemBuilder?.call(
+                    context,
+                    emojiId,
+                    emoji,
+                    onEmojiSelected,
+                  ) ??
+                  EmojiItem(
+                    textStyle: configuration.emojiStyle,
+                    emoji: emoji,
+                    onTap: () => onEmojiSelected(
+                      emojiId,
+                      emoji,
+                    ),
+                  );
+            },
+          );
+        },
+      );
+    } else {
+      child = SliverGrid.builder(
+        itemCount: category.emojiIds.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: configuration.perLine,
+          crossAxisSpacing: configuration.crossAxisSpacing,
+          mainAxisSpacing: configuration.mainAxisSpacing,
+        ),
+        itemBuilder: (context, index) {
+          final emojiId = category.emojiIds[index];
+          final emoji = emojiData.getEmojiById(
+            emojiId,
+            skinTone: skinTone,
+          );
+          return itemBuilder?.call(
+                context,
                 emojiId,
                 emoji,
-              ),
-            );
-      },
-    );
+                onEmojiSelected,
+              ) ??
+              EmojiItem(
+                textStyle: configuration.emojiStyle,
+                emoji: emoji,
+                onTap: () => onEmojiSelected(
+                  emojiId,
+                  emoji,
+                ),
+              );
+        },
+      );
+    }
     if (configuration.showSectionHeader) {
       child = SliverVisibilityDetector(
         key: ValueKey(category.id),
