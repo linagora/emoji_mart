@@ -134,6 +134,40 @@ class EmojiData with _$EmojiData {
     return filteredEmojiData;
   }
 
+  EmojiData filterByVersion(
+    double maxVersion, {
+    bool keepEmptyCategories = false,
+  }) {
+    final filteredCategories = <Category>[];
+    final filteredEmojis = <String, Emoji>{};
+
+    for (final category in categories) {
+      final filteredEmojiIds = <String>[];
+      for (final emojiId in category.emojiIds) {
+        final emoji = emojis[emojiId]!;
+        if (emoji.version <= maxVersion) {
+          filteredEmojiIds.add(emojiId);
+          filteredEmojis[emojiId] = emoji;
+        }
+      }
+
+      if (filteredEmojiIds.isNotEmpty || keepEmptyCategories) {
+        filteredCategories.add(
+          category.copyWith(
+            emojiIds: filteredEmojiIds,
+          ),
+        );
+      }
+    }
+
+    final filteredEmojiData = copyWith(
+      categories: filteredCategories,
+      emojis: filteredEmojis,
+    );
+
+    return filteredEmojiData;
+  }
+
   /// generate a random emoji
   (String, String) get random {
     final random = Random();
