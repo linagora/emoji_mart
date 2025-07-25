@@ -30,7 +30,7 @@ dependencies:
   linagora_design_flutter:
     git:
       url: git@github.com:linagora/linagora-design-flutter.git
-      ref: master
+      ref: add-hover-in-twake-inkwell
 
 dev_dependencies:
   flutter_test:
