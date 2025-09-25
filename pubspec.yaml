@@ -12,7 +12,7 @@ platforms:
   windows:
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -22,7 +22,7 @@ dependencies:
   json_annotation: ^4.8.1
   freezed_annotation: ^2.4.1
   visibility_detector: ^0.4.0+2
-  flutter_sticky_header: 0.7.0
+  flutter_sticky_header: ^0.8.0
   sliver_tools: ^0.2.12
   easy_debounce: ^2.0.3
   scroll_to_index: ^3.0.1
@@ -43,4 +43,3 @@ dev_dependencies:
 flutter:
   assets:
     - assets/emoji_data.json
-
