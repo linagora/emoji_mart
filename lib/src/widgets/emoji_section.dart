@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_emoji_mart/flutter_emoji_mart.dart';
+import 'package:flutter_emoji_mart/src/widgets/emoji_stream_builder.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -47,29 +48,23 @@ class EmojiSection extends StatelessWidget {
     Widget child;
     if (category.id == EmojiPickerConfiguration.recentCategoryId &&
         category.emojiIds.isEmpty) {
-      child = FutureBuilder<Category?>(
-        future: recentEmoji,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SliverToBoxAdapter(
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-          if (!snapshot.hasData || snapshot.data!.emojiIds.isEmpty) {
+      child = EmojiStreamBuilder(
+        categoryFuture: recentEmoji,
+        builder: (emojiIds) {
+          if (emojiIds.isEmpty) {
             return const SliverToBoxAdapter(
               child: SizedBox(height: 16),
             );
           }
-          final recentCategory = snapshot.data!;
           return SliverGrid.builder(
-            itemCount: recentCategory.emojiIds.length,
+            itemCount: emojiIds.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: configuration.perLine,
               crossAxisSpacing: configuration.crossAxisSpacing,
               mainAxisSpacing: configuration.mainAxisSpacing,
             ),
             itemBuilder: (context, index) {
-              final emojiId = recentCategory.emojiIds[index];
+              final emojiId = emojiIds[index];
               final emoji = emojiData.getEmojiById(
                 emojiId,
                 skinTone: skinTone,
