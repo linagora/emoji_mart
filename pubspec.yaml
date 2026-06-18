@@ -30,7 +30,7 @@ dependencies:
   linagora_design_flutter:
     git:
       url: https://github.com/linagora/linagora-design-flutter.git
-      ref: v0.1.1
+      ref: create-twake-inter-fonts-in-design-system
 
 dev_dependencies:
   flutter_test:
