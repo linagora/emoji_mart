@@ -30,7 +30,7 @@ dependencies:
   linagora_design_flutter:
     git:
       url: https://github.com/linagora/linagora-design-flutter.git
-      ref: v0.1.2
+      ref: v0.2.0
 
 dev_dependencies:
   flutter_test:
