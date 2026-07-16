@@ -77,10 +77,10 @@ packages:
     dependency: transitive
     description:
       name: equatable
-      sha256: "3e0141505477fd8ad55d6eb4e7776d3fe8430be8e497ccb1521370c3f21a3e2b"
+      sha256: "3bce007a596ff8b3119c45d68aaef631272537c03d30e5d4534dd24bf4c5eaa2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.8"
+    version: "2.1.0"
   fake_async:
     dependency: transitive
     description:
@@ -244,7 +244,7 @@ packages:
     description:
       path: "."
       ref: TW-3218-add-new-components-for-device-verification
-      resolved-ref: "2e9867844373120e258209cb554b3821d6b062a8"
+      resolved-ref: "3f3dd0251689daef442d6325a3aedb5cee78ed6e"
       url: "https://github.com/linagora/linagora-design-flutter.git"
     source: git
     version: "0.2.0"
@@ -356,10 +356,10 @@ packages:
     dependency: transitive
     description:
       name: photo_manager
-      sha256: fb3bc8ea653370f88742b3baa304700107c83d12748aa58b2b9f2ed3ef15e6c2
+      sha256: bf840253a7a5a48774f3a23b042a673614785e9874e0c86e2837681d576ef252
       url: "https://pub.dev"
     source: hosted
-    version: "3.9.0"
+    version: "3.10.0"
   photo_manager_image_provider:
     dependency: transitive
     description:
