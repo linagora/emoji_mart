@@ -243,11 +243,11 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "v0.2.0"
-      resolved-ref: "160531adb37004898cff78009f5ebdbafdf54a32"
+      ref: "v0.2.1"
+      resolved-ref: "939e86121bdabaeaa91977532e2077ecb7454b9c"
       url: "https://github.com/linagora/linagora-design-flutter.git"
     source: git
-    version: "0.2.0"
+    version: "0.2.1"
   lints:
     dependency: transitive
     description:
