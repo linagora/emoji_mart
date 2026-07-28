@@ -243,11 +243,11 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: TW-3218-add-new-components-for-device-verification
-      resolved-ref: "5ecc5bf38540bfa7692b0c3c5c5a3e75712fb4f2"
+      ref: "v0.2.3"
+      resolved-ref: f71755b994b0e75df1bb5a405a404380a105575c
       url: "https://github.com/linagora/linagora-design-flutter.git"
     source: git
-    version: "0.2.1"
+    version: "0.2.3"
   lints:
     dependency: transitive
     description:
