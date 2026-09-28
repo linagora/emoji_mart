@@ -243,11 +243,19 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "v0.2.6"
-      resolved-ref: "361d5a222de7d1558881740b92abe2db3c4c1e7f"
+      ref: "v0.3.4"
+      resolved-ref: "0712b30dcaf02e0d2ed9467051a8e144dfacf2f1"
       url: "https://github.com/linagora/linagora-design-flutter.git"
     source: git
-    version: "0.2.6"
+    version: "0.3.4"
+  linkify:
+    dependency: transitive
+    description:
+      name: linkify
+      sha256: "4139ea77f4651ab9c315b577da2dd108d9aa0bd84b5d03d33323f1970c645832"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
   lints:
     dependency: transitive
     description:
@@ -527,4 +535,4 @@ packages:
     version: "6.6.1"
 sdks:
   dart: ">=3.10.0 <4.0.0"
-  flutter: ">=3.35.0"
+  flutter: ">=3.38.0"
